@@ -1,0 +1,8 @@
+@startuml
+
+class InputHandler
+interface IInputHandler
+class Player
+
+InputHandler -|> IInputHandler
+Player -> IInputHandler
