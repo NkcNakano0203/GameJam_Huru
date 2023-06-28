@@ -15,19 +15,15 @@ public class Star : MonoBehaviour
     StarMover starMover;
     [SerializeField]
     StarRotator starRotator;
-    [SerializeField]
-    SplineContainer[] splines;
+
+    SplineContainer spline;
 
     public int AddScoreValue => addScoreValue;
 
-    private void Start()
-    {
-        Init();
-    }
-    public void Init()
+    public void Init(SplineContainer spline)
     {
         // ランダムでスプラインを入れる
-        starMover.Init(moveSpeed, splines[0]);
+        starMover.Init(moveSpeed, spline);
         starRotator.Init(rotationSpeed);
     }
 

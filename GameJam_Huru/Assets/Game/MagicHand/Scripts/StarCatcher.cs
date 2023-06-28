@@ -11,6 +11,9 @@ namespace MagicHand
     /// </summary>
     public class StarCatcher : MonoBehaviour
     {
+        [SerializeField]
+        Transform handTrans;
+
         bool isActive = false;
 
         private ReactiveProperty<int> catchProperty = new ReactiveProperty<int>(0);
@@ -32,7 +35,7 @@ namespace MagicHand
             // スターを識別してスコア加算イベントを発行する
             if (!other.TryGetComponent(out Star star)) return;
             star.Catched();
-            star.transform.SetParent(transform);
+            star.transform.SetParent(handTrans);
             Destroy(star.gameObject, 1);
             catchProperty.Value += star.AddScoreValue;
             isActive = false;

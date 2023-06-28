@@ -8,8 +8,8 @@ public class InputHandler : MonoBehaviour, IInputHandler
     [SerializeField]
     PlayerInput playerInput;
 
-    private ReactiveProperty<Vector2> moveProperty = new();
-    public IReadOnlyReactiveProperty<Vector2> Move => moveProperty;
+    private ReactiveProperty<float> moveProperty = new();
+    public IReadOnlyReactiveProperty<float> Move => moveProperty;
 
     private Subject<bool> pushSubject = new();
     public IObservable<bool> Push => pushSubject;
@@ -20,6 +20,7 @@ public class InputHandler : MonoBehaviour, IInputHandler
     private void Start()
     {
         playerInput.actions["Move"].performed += OnMoved;
+        playerInput.actions["Move"].canceled += OnMoved;
         playerInput.actions["Push"].started += OnPushed;
         playerInput.actions["ESC"].performed += OnEscaped;
     }
@@ -32,7 +33,7 @@ public class InputHandler : MonoBehaviour, IInputHandler
     private void OnMoved(InputAction.CallbackContext callback)
     {
         Vector2 inputVec = callback.ReadValue<Vector2>();
-        moveProperty.Value = inputVec;
+        moveProperty.Value = inputVec.x;
     }
 
     private void OnPushed(InputAction.CallbackContext callback)

@@ -2,19 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
-using static UnityEngine.Rendering.DebugUI;
 
 public class StarMover : MonoBehaviour
 {
     [SerializeField]
-    SplineContainer container;
-
-    [SerializeField]
     Rigidbody rb;
+
+    SplineContainer container;
     float moveSpeed = 0;
     float t;
 
-    bool isCatched = false;
+    bool isCatched = true;
 
     void Update()
     {
@@ -29,6 +27,7 @@ public class StarMover : MonoBehaviour
     {
         moveSpeed = value;
         container = spline;
+        isCatched = false;
     }
 
     public void Catched() => isCatched = true;

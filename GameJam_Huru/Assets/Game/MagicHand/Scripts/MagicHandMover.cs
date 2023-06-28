@@ -4,6 +4,7 @@ using UnityEngine;
 using UniRx;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 
 namespace MagicHand
 {
@@ -17,35 +18,62 @@ namespace MagicHand
         Rigidbody rb;
         [SerializeField]
         float moveValue;
+        [SerializeField]
+        float horizontalSpeed;
+        [SerializeField]
+        float brakeValue;
 
         IInputHandler input;
         Tweener tweener;
         Vector3 defaultPos;
         bool isMoving = false;
+        float currentInputX;
 
         private void Start()
         {
             defaultPos = transform.position;
             input = inputHandler.GetComponent<IInputHandler>();
-            input.Push.Subscribe(x =>
-            {
-                MoveUp();
-            });
             rb = GetComponent<Rigidbody>();
-            starCatcher.CatchProperty.Subscribe(x =>
-            {
-                Stop();
-                Debug.Log("A");
-            });
+
+            input.Move.Subscribe(Move);
+            input.Push.Subscribe(PushUp);
+            starCatcher.CatchProperty.Subscribe(Stop);
         }
 
-        private void Stop()
+        private void FixedUpdate()
+        {
+            if (currentInputX == 0)
+            { rb.velocity = Brake(brakeValue); }
+        }
+
+        private void Move(float inputX)
+        {
+            currentInputX = inputX;
+            if (inputX == 0) return;
+            rb.velocity = new Vector3(inputX * horizontalSpeed, 0, 0);
+        }
+
+        private Vector3 Brake(float brakeValue)
+        {
+            if (rb.velocity.x < brakeValue)
+            {
+                // ˆê’è‘¬“xˆÈ‰º‚É‚È‚Á‚½‚çŽ~‚ß‚é
+                return Vector3.zero;
+            }
+            else
+            {
+                // ‚ä‚Á‚­‚èŒ¸‘¬‚·‚é
+                return new Vector3(rb.velocity.x - (rb.velocity.x >= 0 ? brakeValue : -brakeValue), 0, 0);
+            }
+        }
+
+        private void Stop(int i)
         {
             tweener.Kill();
-            MoveDown();
+            PullDown().Forget();
         }
 
-        private void MoveUp()
+        private void PushUp(bool x)
         {
             if (isMoving) return;
             isMoving = true;
@@ -54,18 +82,18 @@ namespace MagicHand
                 .SetEase(Ease.InSine)
                 .SetRelative(true)
                 .SetLink(gameObject)
-                .OnComplete(() => { MoveDown(); });
+                .OnComplete(() => { PullDown().Forget(); });
         }
 
-        private async UniTask MoveDown()
+        private async UniTask PullDown()
         {
             starCatcher.SetActive(false);
-            await rb.DOMoveY(defaultPos.y - 3f, 0.5f)
+            await rb.DOMoveY(defaultPos.y - 3f, 0.7f)
                 .SetEase(Ease.Linear)
                 .SetLink(gameObject)
                 .ToUniTask();
 
-            rb.DOMoveY(defaultPos.y, 0.5f)
+            rb.DOMoveY(defaultPos.y, 0.3f)
                 .SetEase(Ease.OutSine)
                 .SetLink(gameObject)
                 .OnComplete(() => { isMoving = false; })
