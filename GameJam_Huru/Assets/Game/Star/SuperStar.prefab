@@ -134,9 +134,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af06381ebf5d543498beb19f5e31e02c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  addScoreValue: 100
+  addScoreValue: 200
   moveSpeed: 5
-  rotationSpeed: 3
+  rotationSpeed: 5
   starMover: {fileID: 7046828010773170245}
   starRotator: {fileID: 4700015531889411823}
 --- !u!114 &7046828010773170245
@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 3442183777913096536}
+  trailRenderer: {fileID: 5861967456375686302}
 --- !u!114 &4700015531889411823
 MonoBehaviour:
   m_ObjectHideFlags: 0

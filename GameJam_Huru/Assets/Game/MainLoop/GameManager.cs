@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
     private Subject<int> gameCountDownSubject = new();
     public IObservable<int> GameCountDownSubject => gameCountDownSubject;
 
+    private Subject<bool> gameEndSubject = new();
+    public IObservable<bool> GameEndSubject => gameEndSubject;
+
     private GameState currentGameState = GameState.Ready;
     public GameState GetCurrentGameState => currentGameState;
     bool isCounting = false;
@@ -39,13 +42,12 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(CountDownCol(3));
                 break;
             case GameState.Game:
-                starFactory.plaing = true;
                 if (isCounting) return;
                 isCounting = true;
                 StartCoroutine(CountDownCol(30));
                 break;
             case GameState.Finish:
-
+                gameEndSubject.OnNext(true);
                 break;
             default:
                 if (isCounting) return;
@@ -70,7 +72,14 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(1);
         }
 
-        currentGameState = GameState.Game;
+        if (currentGameState == GameState.Ready)
+        {
+            currentGameState = GameState.Game;
+        }
+        else if (currentGameState == GameState.Game)
+        {
+            currentGameState = GameState.Finish;
+        }
         isCounting = false;
     }
 }

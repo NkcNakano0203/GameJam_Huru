@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
+using UniRx;
 
 public class Star : MonoBehaviour
 {
@@ -16,9 +17,12 @@ public class Star : MonoBehaviour
     [SerializeField]
     StarRotator starRotator;
 
-    SplineContainer spline;
-
     public int AddScoreValue => addScoreValue;
+
+    private void Start()
+    {
+        starMover.MoveEnd.Subscribe(x => { Term(); });
+    }
 
     public void Init(SplineContainer spline)
     {
@@ -27,9 +31,10 @@ public class Star : MonoBehaviour
         starRotator.Init(rotationSpeed);
     }
 
-    public void Catched()
+    public void Term()
     {
-        starMover.Catched();
-        starRotator.Catched();
+        starMover.Term();
+        starRotator.Term();
+        gameObject.SetActive(false);
     }
 }

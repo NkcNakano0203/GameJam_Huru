@@ -24,7 +24,6 @@ public class ReadyCountDownView : MonoBehaviour
         rectTransform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.9f)
             .OnComplete(() =>
             {
-                Debug.Log(value);
                 if (value != 1) return;
                 countDownObj.SetActive(false);
             });

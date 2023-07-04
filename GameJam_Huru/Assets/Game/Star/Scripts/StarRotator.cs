@@ -11,11 +11,11 @@ public class StarRotator : MonoBehaviour
     Transform trans;
 
     float speed = 0;
-    bool isCatched = false;
+    bool isActive = false;
 
     private void Update()
     {
-        if (isCatched) return;
+        if (!isActive) return;
         // y軸を軸にして5度、x軸を軸にして5度、回転させるQuaternionを作成（変数をrotとする）
         Quaternion rot = Quaternion.Euler(axis.x * speed, axis.y * speed, axis.z * speed);
         // 現在の自信の回転の情報を取得する。
@@ -24,6 +24,15 @@ public class StarRotator : MonoBehaviour
         trans.rotation = q * rot;
     }
 
-    public void Init(float value) => speed = value;
-    public void Catched() => isCatched = true;
+    public void Init(float value)
+    {
+        speed = value;
+        isActive = true;
+    }
+
+    public void Term()
+    {
+        isActive = false;
+        speed = 0;
+    }
 }

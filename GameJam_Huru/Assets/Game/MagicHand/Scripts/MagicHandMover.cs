@@ -70,7 +70,7 @@ namespace MagicHand
         private void Stop(int i)
         {
             tweener.Kill();
-            PullDown().Forget();
+            PullDown();
         }
 
         private void PushUp(bool x)
@@ -78,26 +78,20 @@ namespace MagicHand
             if (isMoving) return;
             isMoving = true;
             starCatcher.SetActive(true);
-            tweener = rb.DOMoveY(moveValue, 0.5f)
+            tweener = rb.DOMoveY(moveValue, 0.4f)
                 .SetEase(Ease.InSine)
                 .SetRelative(true)
                 .SetLink(gameObject)
-                .OnComplete(() => { PullDown().Forget(); });
+                .OnComplete(() => { PullDown(); });
         }
 
-        private async UniTask PullDown()
+        private void PullDown()
         {
             starCatcher.SetActive(false);
-            await rb.DOMoveY(defaultPos.y - 3f, 0.7f)
-                .SetEase(Ease.Linear)
-                .SetLink(gameObject)
-                .ToUniTask();
-
-            rb.DOMoveY(defaultPos.y, 0.3f)
-                .SetEase(Ease.OutSine)
-                .SetLink(gameObject)
-                .OnComplete(() => { isMoving = false; })
-                .ToUniTask().Forget();
+            rb.DOMoveY(defaultPos.y, 0.7f)
+               .SetEase(Ease.OutBack)
+               .SetLink(gameObject)
+               .OnComplete(() => { isMoving = false; });
         }
     }
 }

@@ -11,18 +11,13 @@ namespace MagicHand
     /// </summary>
     public class StarCatcher : MonoBehaviour
     {
-        [SerializeField]
-        Transform handTrans;
-
         bool isActive = false;
 
         private ReactiveProperty<int> catchProperty = new ReactiveProperty<int>(0);
         public IObservable<int> CatchProperty => catchProperty.SkipLatestValueOnSubscribe();
 
-        void Start()
-        {
-
-        }
+        private Subject<Star> starSubject = new Subject<Star>();
+        public IObservable<Star> StarSubject => starSubject;
 
         public void SetActive(bool active)
         {
@@ -34,10 +29,8 @@ namespace MagicHand
             if (!isActive) return;
             // スターを識別してスコア加算イベントを発行する
             if (!other.TryGetComponent(out Star star)) return;
-            star.Catched();
-            star.transform.SetParent(handTrans);
-            Destroy(star.gameObject, 1);
             catchProperty.Value += star.AddScoreValue;
+            starSubject.OnNext(star);
             isActive = false;
         }
     }
